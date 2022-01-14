@@ -11,4 +11,12 @@ describe("parse", () => {
     `);
     expect(result).toEqual(["#root", "#container", ".liquid", ".btn", ".btn-primary"]);
   });
+  it("detects explicit class/id attrs", () => {
+    const result = parse(`
+      = link_to root_path,
+        class: "btn btn-primary" do
+        %div{ id: "important-link" }
+    `);
+    expect(result).toEqual([".btn", ".btn-primary", "#important-link"]);
+  });
 });
