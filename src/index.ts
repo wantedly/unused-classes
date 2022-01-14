@@ -14,7 +14,8 @@ import { parse } from "./haml";
       classNames.add(className);
     }
   }
-  for (const className of Array.from(classNames.values()).sort()) {
-    console.log(className);
-  }
+  const result = {
+    class_names: Array.from(classNames.values()).sort(),
+  };
+  await fs.promises.writeFile("./repo/tmp/classes.json", JSON.stringify(result));
 })();
