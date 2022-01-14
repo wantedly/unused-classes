@@ -1,16 +1,24 @@
 import glob from "glob";
 import fs from "node:fs";
 import { promisify } from "node:util";
-import { parse } from "./haml";
+import { parse as parseHaml } from "./haml";
+import { parse as parseErb } from "./erb";
 
 (async () => {
   // TODO: make it configurable.
   // Use ln -s path/to/repo repo now
-  const files = await promisify(glob)("./repo/app/**/*.haml");
+  const files = await promisify(glob)("./repo/app/**/*", { nodir: true });
   const classNames = new Set<string>();
   for (const filename of files) {
-    const content = await fs.promises.readFile(filename, { encoding: "utf-8" });
-    for (const className of parse(content)) {
+    let result: string[];
+    if (/\.haml$/.test(filename)) {
+      result = parseHaml(await fs.promises.readFile(filename, { encoding: "utf-8" }));
+    } else if (/\.html\.erb$/.test(filename)) {
+      result = parseErb(await fs.promises.readFile(filename, { encoding: "utf-8" }));
+    } else {
+      continue;
+    }
+    for (const className of result) {
       classNames.add(className);
     }
   }
