@@ -92,12 +92,12 @@ function describeUnused(selectors: string[]): string {
 }
 
 function parseSelector(selector: string, result: stylelint.PostcssResult, node: PostCSS.Node): SelectorRoot {
-	try {
-		return selectorParser().astSync(selector);
-	} catch {
-		result.warn('Cannot parse selector', { node, stylelintType: 'parseError' });
+  try {
+    return selectorParser().astSync(selector);
+  } catch {
+    result.warn('Cannot parse selector', { node, stylelintType: 'parseError' });
     return selectorParser().astSync("*"); // dummy
-	}
+  }
 };
 
 type ClassesData = {
