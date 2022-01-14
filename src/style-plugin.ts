@@ -19,12 +19,29 @@ module.exports = stylelint.createPlugin(
       root.walkRules((rule) => {
         const selectorRoot = parseSelector(rule.selector, result, rule);
         if (isUnused(classSet, selectorRoot)) {
+          const unused = collectUnused(classSet, selectorRoot);
+          // Report against the whole rule
           stylelint.utils.report({
             ruleName,
             result,
-            message: "Possibly unused classes",
+            message: `Possibly unused ${describeUnused(unused)}: ${unused.join(", ")}`,
             node: rule,
-          })
+          });
+        } else {
+          selectorRoot.walk((node) => {
+            if (node.type !== "class" && node.type !== "id") return;
+            if (isUnused(classSet, node)) {
+              const unused = collectUnused(classSet, node);
+              // Report against the selector
+              stylelint.utils.report({
+                ruleName,
+                result,
+                message: `Possibly unused ${describeUnused(unused)}: ${unused.join(", ")}`,
+                node: rule,
+                index: node.sourceIndex,
+              });
+            }
+          });
         }
       });
     };
@@ -51,12 +68,35 @@ function isUnused(classSet: Set<string>, node: SelectorRoot | Selector | Identif
   return false;
 }
 
+function collectUnused(classSet: Set<string>, node: SelectorRoot | Selector | IdentifierSelector | ClassNameSelector): string[] {
+  switch (node.type) {
+    case "root":
+      return node.nodes.flatMap((sel) => collectUnused(classSet, sel));
+    case "selector":
+      return node.nodes.flatMap((elem) => {
+        if (elem.type === "class" || elem.type === "id") return collectUnused(classSet, elem);
+        return [];
+      });
+    case "class":
+      return classSet.has(`.${node.value}`) ? [] : [`.${node.value}`];
+    case "id":
+      return classSet.has(`#${node.value}`) ? [] : [`#${node.value}`];
+  }
+  return [];
+}
+
+function describeUnused(selectors: string[]): string {
+  const hasClasses = selectors.some((sel) => sel.startsWith("."));
+  const hasIds = selectors.some((sel) => sel.startsWith("#"));
+  return hasClasses && hasIds ? "classes and ids" : hasIds ? "ids" : "classes";
+}
+
 function parseSelector(selector: string, result: stylelint.PostcssResult, node: PostCSS.Node): SelectorRoot {
 	try {
 		return selectorParser().astSync(selector);
 	} catch {
 		result.warn('Cannot parse selector', { node, stylelintType: 'parseError' });
-    return selectorParser.universal(); // dummy
+    return selectorParser().astSync("*"); // dummy
 	}
 };
 
