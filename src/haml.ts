@@ -12,7 +12,7 @@ export function parse(text: string): string[] {
         // fallthrough
       case '%':
       case '.': {
-        const [, _tagPart, classPart, _rest] = line.match(/(%[-:\w]*)?([-:\w.#\@]*)(.*)/)!;
+        const [, _tagPart, classPart, _rest] = tLine.match(/(%[-:\w]*)?([-:\w.#\@]*)(.*)/)!;
         for (const classOrId of classPart.matchAll(/[.#][-:\w\@]*/g)) {
           classNames.push(classOrId[0]);
         }
