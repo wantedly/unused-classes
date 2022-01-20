@@ -6217,6 +6217,7 @@ __metadata:
     "@types/node": ^17.0.8
     babel-jest: ^27.4.6
     commander: ^8.3.0
+    cosmiconfig: ^7.0.1
     glob: ^7.2.0
     jest: ^27.4.7
     postcss: ^8.4.5
