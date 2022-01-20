@@ -2,10 +2,12 @@
   "name": "unused-classes",
   "version": "0.1.0",
   "packageManager": "yarn@3.1.1",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "$npm_execpath build:babel && $npm_execpath tsc",
     "build:babel": "babel -x .ts -d dist src --ignore 'src/**/*.test.ts'",
     "prepack": "$npm_execpath build",
+    "start": "node dist/index.js",
     "start:dev": "babel-node -x .ts src/index.ts",
     "tsc": "tsc --build"
   },
