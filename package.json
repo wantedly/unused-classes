@@ -7,6 +7,7 @@
     "start:dev": "babel-node -x .ts src/index.ts"
   },
   "dependencies": {
+    "commander": "^8.3.0",
     "glob": "^7.2.0",
     "postcss-selector-parser": "^6.0.8"
   },
