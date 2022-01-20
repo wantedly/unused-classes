@@ -5468,6 +5468,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"root@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "root@workspace:."
+  languageName: unknown
+  linkType: soft
+
 "run-parallel@npm:^1.1.9":
   version: 1.2.0
   resolution: "run-parallel@npm:1.2.0"
@@ -6203,9 +6209,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unused-classes@workspace:.":
+"unused-classes@workspace:packages/unused-classes":
   version: 0.0.0-use.local
-  resolution: "unused-classes@workspace:."
+  resolution: "unused-classes@workspace:packages/unused-classes"
   dependencies:
     "@babel/cli": ^7.16.8
     "@babel/core": ^7.16.7
