@@ -8,5 +8,8 @@
   "scripts": {
     "build": "yarn workspaces foreach -pt run build",
     "test": "yarn workspaces foreach -pt run test"
+  },
+  "devDependencies": {
+    "source-map-support": "^0.5.21"
   }
 }
