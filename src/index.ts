@@ -7,12 +7,14 @@ import { program } from "commander";
 import { cosmiconfig } from "cosmiconfig";
 import { parse as parseHaml } from "./haml";
 import { parse as parseErb } from "./erb";
+import { parse as parseKnownClasses } from "./known-classes";
 import { validateConfig } from "./config";
 
-type Parser = (text: string) => string[];
+type Parser = (text: string, options?: any) => string[];
 const parserMap: Record<string, Parser> = {
   haml: parseHaml,
   erb: parseErb,
+  "known-classes": parseKnownClasses,
 };
 
 program.version("0.1.0");
@@ -40,7 +42,7 @@ const opts = program.opts();
 
   const classNames = new Set<string>();
   for (const rule of rules) {
-    const { include, exclude = [], parser: parserName } = rule;
+    const { include, exclude = [], parser: parserName, options } = rule;
     const parse = parserMap[parserName];
     const files: string[] = [];
     for (const includeRule of include) {
@@ -51,7 +53,7 @@ const opts = program.opts();
       return exclude.every((excludeRule) => minimatch(file, excludeRule))
     });
     for (const filename of filteredFiles) {
-      const result = parse(await fs.promises.readFile(filename, { encoding: "utf-8" }));
+      const result = parse(await fs.promises.readFile(filename, { encoding: "utf-8" }), options);
       for (const className of result) {
         classNames.add(className);
       }
