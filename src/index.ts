@@ -27,7 +27,7 @@ const opts = program.opts();
   const { directory = "." } = opts;
   const explorer = cosmiconfig("classnames");
   const config = await explorer.search(directory);
-  if (!config.config) throw new Error("Config not found");
+  if (!config) throw new Error("Config not found");
   validateConfig(config.config);
 
   const { rules = [], output = "classes.json" } = config.config;
