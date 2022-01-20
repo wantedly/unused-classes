@@ -1,4 +1,5 @@
 import glob from "glob";
+import minimatch from "minimatch";
 import fs from "node:fs";
 import path from "node:path";
 import { promisify } from "node:util";
@@ -7,6 +8,12 @@ import { cosmiconfig } from "cosmiconfig";
 import { parse as parseHaml } from "./haml";
 import { parse as parseErb } from "./erb";
 import { validateConfig } from "./config";
+
+type Parser = (text: string) => string[];
+const parserMap: Record<string, Parser> = {
+  haml: parseHaml,
+  erb: parseErb,
+};
 
 program.version("0.1.0");
 program.name("unused-classes");
@@ -22,20 +29,32 @@ const opts = program.opts();
   const config = await explorer.search(directory);
   if (!config.config) throw new Error("Config not found");
   validateConfig(config.config);
-  const { output = "classes.json" } = config.config;
-  const files = await promisify(glob)(`${directory}/app/**/*`, { nodir: true });
-  const classNames = new Set<string>();
-  for (const filename of files) {
-    let result: string[];
-    if (/\.haml$/.test(filename)) {
-      result = parseHaml(await fs.promises.readFile(filename, { encoding: "utf-8" }));
-    } else if (/\.html\.erb$/.test(filename)) {
-      result = parseErb(await fs.promises.readFile(filename, { encoding: "utf-8" }));
-    } else {
-      continue;
+
+  const { rules = [], output = "classes.json" } = config.config;
+  for (const rule of rules) {
+    const { parser: parserName } = rule;
+    if (!Object.prototype.hasOwnProperty.call(parserMap, parserName)) {
+      throw new Error(`Unknown parser: ${parserName}`);
     }
-    for (const className of result) {
-      classNames.add(className);
+  }
+
+  const classNames = new Set<string>();
+  for (const rule of rules) {
+    const { include, exclude = [], parser: parserName } = rule;
+    const parse = parserMap[parserName];
+    const files: string[] = [];
+    for (const includeRule of include) {
+      const subFiles = await promisify(glob)(path.resolve(directory, includeRule), { nodir: true });
+      files.push(...subFiles);
+    }
+    const filteredFiles = files.filter((file) => {
+      return exclude.every((excludeRule) => minimatch(file, excludeRule))
+    });
+    for (const filename of filteredFiles) {
+      const result = parse(await fs.promises.readFile(filename, { encoding: "utf-8" }));
+      for (const className of result) {
+        classNames.add(className);
+      }
     }
   }
   const result = {
