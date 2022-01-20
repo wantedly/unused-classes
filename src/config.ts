@@ -1,5 +1,6 @@
 export type Config = {
   rules?: Rule[] | undefined;
+  externals?: Record<string, string[]>;
   output?: string | undefined;
 };
 
@@ -24,10 +25,16 @@ class ConfigError extends Error {
 }
 
 export function validateConfig(obj: unknown, path = "$"): asserts obj is Config {
-  if (typeof obj !== "object" || obj === null) throw new ConfigError(path, "not an object");
-  validateKeys(obj, path, ["rules", "output"] as const);
+  validateObject(obj, path);
+  validateKeys(obj, path, ["rules", "externals", "output"] as const);
   if (typeof obj.rules !== "undefined") {
     validateArray(obj.rules, `${path}.rules`, validateRule);
+  }
+  if (typeof obj.externals !== "undefined") {
+    validateObject(obj.externals, `${path}.externals`);
+    for (const [key, value] of Object.entries(obj.externals)) {
+      validateArray(value, `${path}.externals[${JSON.stringify(key)}]`, validateString);
+    }
   }
   if (typeof obj.output !== "undefined") {
     validateString(obj.output, `${path}.output`);
@@ -42,6 +49,10 @@ export function validateRule(obj: unknown, path = "$"): asserts obj is Rule {
     validateArray(obj.exclude, `${path}.exclude`, validateString);
   }
   validateString(obj.parser, `${path}.parser`);
+}
+
+function validateObject(obj: unknown, path: string): asserts obj is object {
+  if (typeof obj !== "object" || obj === null) throw new ConfigError(path, "not an object");
 }
 
 function validateString(obj: unknown, path: string): asserts obj is string {

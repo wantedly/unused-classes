@@ -32,7 +32,7 @@ const opts = program.opts();
   if (!config) throw new Error("Config not found");
   validateConfig(config.config);
 
-  const { rules = [], output = "classes.json" } = config.config;
+  const { rules = [], externals = {}, output = "classes.json" } = config.config;
   for (const rule of rules) {
     const { parser: parserName } = rule;
     if (!Object.prototype.hasOwnProperty.call(parserMap, parserName)) {
@@ -57,6 +57,13 @@ const opts = program.opts();
       for (const className of result) {
         classNames.add(className);
       }
+    }
+  }
+  for (const externalNames of Object.values(externals)) {
+    for (const externalName of externalNames) {
+      if (!externalName.startsWith(".") && !externalName.startsWith("#"))
+        throw new Error(`Not a class name or an id: ${externalName}`);
+      classNames.add(externalName);
     }
   }
   const result = {
