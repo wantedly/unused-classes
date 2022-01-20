@@ -4,5 +4,9 @@
   "packageManager": "yarn@3.1.1",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "build": "yarn workspaces foreach -pt run build",
+    "test": "yarn workspaces foreach -pt run test"
+  }
 }
