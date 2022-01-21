@@ -15,8 +15,7 @@ describe("parse", () => {
         ],
       }
     `, {
-      known_classes: ["user-profile-email", "user-profile-phone", "user-profile-image"],
-      known_ids: ["special-content-header"]
+      known: [".user-profile-email", ".user-profile-phone", ".user-profile-image", "#special-content-header"],
     });
     expect(result).toEqual([".user-profile-email", ".user-profile-phone", "#special-content-header"]);
   });

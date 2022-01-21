@@ -75,8 +75,7 @@ module.exports = {
       include: ["dynamically-generating-code.js"],
       parser: "known-classes",
       options: {
-        known_classes: ["foo"],
-        known_ids: ["bar"],
+        known: [".foo", "#bar"],
       },
     },
   ],

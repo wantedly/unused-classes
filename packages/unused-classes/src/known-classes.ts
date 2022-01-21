@@ -1,11 +1,15 @@
 export type Options = {
-  known_classes?: string[];
-  known_ids?: string[];
+  known?: string[];
 };
 
 export function parse(text: string, options: Options = {}): string[] {
-  const { known_classes: knownClasses = [], known_ids: knownIds = [] } = options;
-  const classNames = knownClasses.filter((className) => text.includes(className)).map((className) => `.${className}`);
-  const ids = knownIds.filter((id) => text.includes(id)).map((id) => `#${id}`);
-  return classNames.concat(ids);
+  const { known = [] } = options;
+  return known.filter((className) => {
+    if (className.startsWith(".") || className.startsWith("#")) {
+      const truncName = className.substring(1);
+      return text.includes(truncName);
+    } else {
+      return false;
+    }
+  });
 }
