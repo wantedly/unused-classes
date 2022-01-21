@@ -1,4 +1,4 @@
-# stylelint-unused-classes
+# unused-classes
 
 ## Purpose
 
