@@ -9,7 +9,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wantedly/unused-classes.git"
+    "url": "https://github.com/wantedly/unused-classes.git",
+    "directory": "packages/stylelint-unused-classes"
   },
   "license": "MIT",
   "author": "Wantedly, Inc. <dev@wantedly.com>",
