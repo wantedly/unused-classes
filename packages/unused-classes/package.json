@@ -1,7 +1,24 @@
 {
   "name": "unused-classes",
   "version": "0.1.0",
+  "description": "A CLI tool to enumerate class names and ids in use",
+  "keywords": ["unused-classes", "css", "cli", "utilities"],
+  "homepage": "https://github.com/wantedly/unused-classes#readme",
+  "bugs": {
+    "url": "https://github.com/wantedly/unused-classes/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wantedly/unused-classes.git"
+  },
+  "license": "MIT",
+  "author": "Wantedly, Inc. <dev@wantedly.com>",
+  "contributors": [
+    "Masaki Hara <ackie.h.gmai@gmail.com>"
+  ],
   "main": "./dist/index.js",
+  "files": ["dist/**/*"],
+  "bin": "./dist/index.js",
   "scripts": {
     "build": "$npm_execpath build:babel && $npm_execpath tsc",
     "build:babel": "babel -x .ts -d dist src --ignore 'src/**/*.test.ts'",
