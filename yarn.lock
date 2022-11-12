@@ -4635,6 +4635,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:^3.0.5":
+  version: 3.1.2
+  resolution: "minimatch@npm:3.1.2"
+  dependencies:
+    brace-expansion: ^1.1.7
+  checksum: c154e566406683e7bcb746e000b84d74465b3a832c45d59912b9b55cd50dee66e5c4b1e5566dba26154040e51672f9aa450a9aef0c97cfc7336b78b7afb9540a
+  languageName: node
+  linkType: hard
+
 "minimist-options@npm:4.1.0":
   version: 4.1.0
   resolution: "minimist-options@npm:4.1.0"
@@ -5872,7 +5881,6 @@ __metadata:
     jest: ^27.4.7
     postcss: ^8.4.5
     postcss-selector-parser: ^6.0.8
-    source-map-support: ^0.5.21
     stylelint: ^14.2.0
     typescript: ^4.5.4
   peerDependencies:
@@ -6251,9 +6259,10 @@ __metadata:
     cosmiconfig: ^7.0.1
     glob: ^7.2.0
     jest: ^27.4.7
-    minimatch: ^3.0.4
-    source-map-support: ^0.5.21
+    minimatch: ^3.0.5
     typescript: ^4.5.4
+  bin:
+    unused-classes: ./dist/index.js
   languageName: unknown
   linkType: soft
 
